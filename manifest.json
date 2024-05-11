@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Auto PiP(e) on Tab Switch",
+    "version": "1.0-rc",
+    "permissions": ["tabs", "activeTab", "scripting"],
+    "host_permissions": ["*://*/*"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": "icon.png"
+    },
+    "icons": {
+        "48": "icon.png"
+    }
+}
