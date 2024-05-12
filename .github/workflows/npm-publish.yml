@@ -1,0 +1,25 @@
+name: Auto-release as ZIP
+
+on:
+    push:
+        branches: ["main"]
+        # Publish semver tags as releases.
+        tags: ["v*.*.*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@master
+    - name: Archive Release
+      uses: thedoctor0/zip-release@0.7.5
+      with:
+        type: 'zip'
+        filename: 'auto-PiPe.zip'
+        exclusions: '*.git* /*node_modules/* .editorconfig'
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "auto-PiPe.zip"
+        body: "# Latest version"
