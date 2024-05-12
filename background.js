@@ -1,9 +1,9 @@
 let lastTabId = 0;
 let tabIdWithPipOn = null;
 
-chrome.tabs.onActivated.addListener((activeInfo) => {
+browser.tabs.onActivated.addListener((activeInfo) => {
     if (tabIdWithPipOn === activeInfo.tabId) {
-        chrome.scripting.executeScript({
+        browser.scripting.executeScript({
             target: { tabId: tabIdWithPipOn },
             func: exitPictureInPicture,
         });
@@ -11,15 +11,15 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     }
 
     if (lastTabId && lastTabId !== activeInfo.tabId) {
-        chrome.scripting.executeScript(
+        browser.scripting.executeScript(
             {
                 target: { tabId: lastTabId },
                 func: requestPictureInPicture,
                 args: [lastTabId],
             },
             () => {
-                if (chrome.runtime.lastError) {
-                    console.error(`Error injecting script: ${chrome.runtime.lastError.message}`);
+                if (browser.runtime.lastError) {
+                    console.error(`Error injecting script: ${browser.runtime.lastError.message}`);
                 }
             },
         );
@@ -28,13 +28,13 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     lastTabId = activeInfo.tabId;
 });
 
-chrome.tabs.onRemoved.addListener((tabId) => {
+browser.tabs.onRemoved.addListener((tabId) => {
     if (tabId === lastTabId) {
         lastTabId = 0;
     }
 });
 
-chrome.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
+browser.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
     if (message.action === "setPipTabId") {
         tabIdWithPipOn = message.tabId;
     }
@@ -59,7 +59,7 @@ async function requestPictureInPicture(tabId) {
         for (const video of videos) {
             if (!video.paused) {
                 await video.requestPictureInPicture();
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: "setPipTabId",
                     tabId: tabId,
                 });
