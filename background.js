@@ -41,31 +41,37 @@ chrome.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
 });
 
 function exitPictureInPicture() {
-    document.exitPictureInPicture();
+    chrome.storage.sync.get(["pauseOnBack", "enabled"], (result) => {
+        if (!result.enabled) return;
+        document.exitPictureInPicture();
 
-    const videos = document.querySelectorAll("video");
+        if (result.pauseOnBack) {
+            const videos = document.querySelectorAll("video");
 
-    for (const video of videos) {
-        // Easter Eggs: Pause and play to nothing
-        video.pause();
-        video.play();
-        video.pause();
-    }
-}
-
-async function requestPictureInPicture(tabId) {
-    try {
-        const videos = document.querySelectorAll("video");
-        for (const video of videos) {
-            if (!video.paused) {
-                await video.requestPictureInPicture();
-                chrome.runtime.sendMessage({
-                    action: "setPipTabId",
-                    tabId: tabId,
-                });
+            for (const video of videos) {
+                video.pause();
             }
         }
-    } catch (error) {
-        console.error("Failed to enter Picture in Picture", error);
-    }
+    });
+}
+
+function requestPictureInPicture(tabId) {
+    chrome.storage.sync.get(["pauseOnBack", "enabled"], async (result) => {
+        if (!result.enabled) return;
+
+        try {
+            const videos = document.querySelectorAll("video");
+            for (const video of videos) {
+                if (!video.paused) {
+                    await video.requestPictureInPicture();
+                    chrome.runtime.sendMessage({
+                        action: "setPipTabId",
+                        tabId: tabId,
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Failed to enter Picture in Picture", error);
+        }
+    });
 }

@@ -4,8 +4,43 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
+        <style>
+            body {
+                width: 300px;
+            }
+
+            .col {
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
     </head>
     <body>
-        <h1>You know the drill, this is temporary</h1>
+        <div class="col">
+            <h1>Extension Configuration</h1>
+            <div>
+                <label for="enabled">Extension enabled</label>
+                <input type="checkbox" id="enabled" />
+            </div>
+
+            <div>
+                <label for="pauseOnBack">Pause on switch back</label>
+                <input type="checkbox" id="pauseOnBack" />
+            </div>
+
+            <button type="button">Exit current PiP (if any)</button>
+
+            <div>
+                <label for="blocklist">Blocklist (one site per line)</label>
+                <textarea
+                    name="blocklist"
+                    id="blocklist"
+                    cols="30"
+                    rows="10"
+                    placeholder="https://youtube.com/"
+                ></textarea>
+            </div>
+        </div>
+        <script src="popup.js"></script>
     </body>
 </html>
